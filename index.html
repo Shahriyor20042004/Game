@@ -10,11 +10,11 @@
 
   <style>
     :root{
-      --bg1: #7dd3fc; /* light cyan */
-      --bg2: #fbcfe8; /* pink */
+      --bg1: #7dd3fc;
+      --bg2: #fbcfe8;
       --card: #ffffff;
-      --accent1: #06b6d4; /* cyan */
-      --accent2: #fb7185; /* rose */
+      --accent1: #06b6d4;
+      --accent2: #fb7185;
       --btn-shadow: rgba(0,0,0,0.12);
       --score-bg: #ffd166;
       --good: #34D399;
@@ -83,7 +83,6 @@
       color:#0f172a;
     }
 
-    /* Progress bar (time line) */
     .time-bar-wrap{
       width:100%;
       height:14px;
@@ -101,7 +100,6 @@
       transition: width 0.35s ease;
     }
 
-    /* center area */
     .play-area{
       text-align:center;
       padding:8px 6px 14px 6px;
@@ -127,7 +125,6 @@
       margin-bottom:10px;
     }
 
-    /* options grid */
     .options{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -149,7 +146,6 @@
     }
     .opt-btn:active{ transform: translateY(3px); box-shadow: 0 4px 8px rgba(2,6,23,0.06); }
 
-    /* color palette for buttons */
     .c-1{ background: linear-gradient(180deg,#60a5fa,#3b82f6); color:#fff; }
     .c-2{ background: linear-gradient(180deg,#f472b6,#fb7185); color:#fff; }
     .c-3{ background: linear-gradient(180deg,#34d399,#10b981); color:#fff; }
@@ -166,7 +162,6 @@
       outline: 4px solid rgba(251,113,129,0.06);
     }
 
-    /* end screen */
     .end-screen{
       display:none;
       text-align:center;
@@ -204,20 +199,7 @@
       box-shadow: 0 10px 22px rgba(59,130,246,0.18);
       cursor:pointer;
     }
-    .ghost{
-      background:transparent;
-      color:#0f172a;
-      padding:10px 12px;
-      border-radius:12px;
-      border:2px solid rgba(15,23,42,0.06);
-      cursor:pointer;
-    }
 
-    /* small screens tweak */
-    @media (max-width:380px){
-      .question{ font-size:18px; }
-      .opt-btn{ font-size:14px; padding:10px 6px; min-height:48px; }
-    }
   </style>
 </head>
 <body>
@@ -239,16 +221,14 @@
         <div class="question" id="question">Загрузка...</div>
         <div class="hint" id="hint">Выберите правильный перевод</div>
 
-        <div class="options" id="options" aria-live="polite" aria-atomic="true">
-          <!-- Buttons будут вставлены сюда -->
-        </div>
+        <div class="options" id="options" aria-live="polite" aria-atomic="true"></div>
 
         <div class="end-screen" id="endScreen">
-          <h2>Время вышло!</h2>
+          <h2>Игра окончена!</h2>
           <div class="end-score">Очки: <span id="finalPoints">0</span></div>
+          <div class="end-score">Рекорд: <span id="bestScore">0</span></div>
           <div class="controls">
             <button class="primary" id="playAgain">Играть снова</button>
-            <button class="ghost" id="closeBtn">Закрыть</button>
           </div>
         </div>
       </div>
@@ -256,77 +236,51 @@
   </div>
 
   <script>
-    /***********************
-     * Настройки игры
-     ***********************/
-    const MAX_TIME = 7;          // макс. секунд в раунде
-    const DELTA = 2;             // прибавлять/убавлять (сек)
-    const ON_EACH_SECOND = 1000; // тик таймера (1 сек)
-    // Функция получения параметра из URL
-function getUrlParam(name) {
-  const params = new URLSearchParams(window.location.search);
-  return params.get(name);
-}
+    const MAX_TIME = 7;
+    const DELTA = 2;
+    const ON_EACH_SECOND = 1000;
 
-// Пытаемся взять слова из URL
-let words = [];
-try {
-  const wordsParam = getUrlParam("words");
-  if (wordsParam) {
-    words = JSON.parse(decodeURIComponent(wordsParam));
-  }
-} catch (e) {
-  console.error("Ошибка разбора параметра words:", e);
-}
+    function getUrlParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
 
-// Если параметра нет — используем запасной список
-if (!words || words.length === 0) {
-  words = [
-    ["apple", "яблоко"],
-    ["dog", "собака"],
-    ["car", "машина"],
-    ["house", "дом"],
-    ["book", "книга"]
-  ];
-}
+    let words = [];
+    try {
+      const wordsParam = getUrlParam("words");
+      if (wordsParam) words = JSON.parse(decodeURIComponent(wordsParam));
+    } catch(e){ console.error("Ошибка разбора words:", e); }
+
+    if (!words || words.length === 0) {
+      words = [
+        ["apple","яблоко"],["dog","собака"],["car","машина"],
+        ["house","дом"],["book","книга"]
+      ];
+    }
 
     let timeLeft = MAX_TIME;
     let score = 0;
+    let bestScore = parseInt(localStorage.getItem('wordBattleBest')||0);
     let current = null;
     let timerInterval = null;
-    let awaitingCorrect = false; // если пользователь дал неверный ответ и должен снова ответить на тот же вопрос
+    let awaitingCorrect = false;
 
-    // DOM
     const scoreValue = document.getElementById('scoreValue');
     const questionEl = document.getElementById('question');
     const optionsEl = document.getElementById('options');
     const timeBar = document.getElementById('timeBar');
     const endScreen = document.getElementById('endScreen');
     const finalPoints = document.getElementById('finalPoints');
+    const bestPoints = document.getElementById('bestScore');
     const playAgainBtn = document.getElementById('playAgain');
-    const closeBtn = document.getElementById('closeBtn');
 
-    // Установим яркие классы циклично
     const btnClasses = ['c-1','c-2','c-3','c-4'];
 
-    function shuffleArray(a){
-      for(let i=a.length-1;i>0;i--){
-        const j = Math.floor(Math.random()*(i+1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
+    function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
     function pickQuestion(){
-      if (!words || words.length === 0) {
-        questionEl.textContent = "Список слов пуст. Добавьте слова в боте.";
-        optionsEl.innerHTML = "";
-        stopTimer();
-        return;
-      }
-      // если ждём пока пользователь ответит правильно на текущий — не менять вопрос
+      if (!words || words.length === 0) return;
       if (awaitingCorrect && current) return current;
-
       current = words[Math.floor(Math.random()*words.length)];
       awaitingCorrect = false;
       return current;
@@ -337,183 +291,88 @@ if (!words || words.length === 0) {
       if(!q) return;
       const [orig, trans] = q;
       questionEl.textContent = `Как переводится «${orig}»?`;
-
-      // генерируем варианты
       let opts = [trans];
-      const translationsPool = words.map(w => w[1]).filter(t => t !== trans);
-      shuffleArray(translationsPool);
-      for(let i=0; opts.length<4 && i<translationsPool.length; i++){
-        if(!opts.includes(translationsPool[i])) opts.push(translationsPool[i]);
-      }
-      // На случай малого количества слов — дублируем разные варианты (без повторения корректного)
-      while(opts.length < 4){
-        opts.push("—");
-      }
+      const pool = words.map(w=>w[1]).filter(t=>t!==trans);
+      shuffleArray(pool);
+      for(let i=0; opts.length<4 && i<pool.length; i++) if(!opts.includes(pool[i])) opts.push(pool[i]);
+      while(opts.length<4) opts.push("—");
       shuffleArray(opts);
-
       optionsEl.innerHTML = '';
       for(let i=0;i<opts.length;i++){
         const btn = document.createElement('button');
-        btn.className = 'opt-btn ' + btnClasses[i % btnClasses.length];
-        btn.type = 'button';
-        btn.textContent = opts[i];
-        btn.dataset.value = opts[i];
-        btn.onclick = () => handleAnswer(btn);
+        btn.className = 'opt-btn '+btnClasses[i%btnClasses.length];
+        btn.type='button';
+        btn.textContent=opts[i];
+        btn.dataset.value=opts[i];
+        btn.onclick=()=>handleAnswer(btn);
         optionsEl.appendChild(btn);
       }
     }
 
     function updateTimeBar(){
-      const ratio = Math.max(0, Math.min(1, timeLeft / MAX_TIME));
-      timeBar.style.width = (ratio * 100) + '%';
-      // color shift: green -> yellow -> red
-      if (ratio > 0.6) {
-        timeBar.style.background = 'linear-gradient(90deg, #34D399 0%, #06b6d4 60%)';
-      } else if (ratio > 0.3) {
-        timeBar.style.background = 'linear-gradient(90deg, #fbbf24 0%, #f97316 60%)';
-      } else {
-        timeBar.style.background = 'linear-gradient(90deg, #fb7185 0%, #ef4444 60%)';
-      }
+      const ratio = Math.max(0, Math.min(1, timeLeft/MAX_TIME));
+      timeBar.style.width = (ratio*100)+'%';
+      if(ratio>0.6) timeBar.style.background='linear-gradient(90deg, #34D399 0%, #06b6d4 60%)';
+      else if(ratio>0.3) timeBar.style.background='linear-gradient(90deg, #fbbf24 0%, #f97316 60%)';
+      else timeBar.style.background='linear-gradient(90deg, #fb7185 0%, #ef4444 60%)';
     }
 
-    function startTimer(){
-      stopTimer();
-      timerInterval = setInterval(() => {
-        timeLeft = Math.max(0, timeLeft - 1);
-        updateTimeBar();
-        if (timeLeft <= 0) {
-          endGame();
-        }
-      }, ON_EACH_SECOND);
-    }
-    function stopTimer(){
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
-    }
+    function startTimer(){ stopTimer(); timerInterval=setInterval(()=>{ timeLeft=Math.max(0,timeLeft-1); updateTimeBar(); if(timeLeft<=0) endGame(); }, ON_EACH_SECOND);}
+    function stopTimer(){ if(timerInterval){ clearInterval(timerInterval); timerInterval=null; } }
 
     function handleAnswer(btn){
-      if (!current) return;
+      if(!current) return;
       const selected = btn.dataset.value;
       const correct = current[1];
-
-      // если кнопка "пустая" (в случае малого количества слов)
-      if (selected === "—") return;
-
-      // заблокируем кнопки ненадолго, чтобы показать эффект
+      if(selected==="—") return;
       const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
-
-      if (selected === correct){
-        // пометить правильную
+      if(selected===correct){
         btn.classList.add('correct');
-        // прибавляем очко
-        score++;
-        scoreValue.textContent = score;
-        // добавляем время (по 2 секунды), но не больше MAX_TIME
-        timeLeft = Math.min(MAX_TIME, timeLeft + DELTA);
-        updateTimeBar();
-        // готов к следующему вопросу
-        awaitingCorrect = false;
-
-        // небольшой визуальный эффект — пометим другие кнопки приглушёнными
-        allBtns.forEach(b => { if(b !== btn) b.style.opacity = '0.7'; });
-
-        // через 350мс — новый вопрос
-        setTimeout(() => {
-          renderQuestion();
-        }, 350);
+        score++; scoreValue.textContent=score;
+        timeLeft = Math.min(MAX_TIME,timeLeft+DELTA); updateTimeBar();
+        awaitingCorrect=false;
+        allBtns.forEach(b=>{ if(b!==btn) b.style.opacity='0.7'; });
+        setTimeout(()=>{ renderQuestion(); },350);
       } else {
-        // неправильный: отметим и уменьшим время
         btn.classList.add('wrong');
-        // уменьшаем время
-        timeLeft = Math.max(0, timeLeft - DELTA);
-        updateTimeBar();
-        // помечаем, что нужно снова ответить на тот же вопрос
-        awaitingCorrect = true;
-        // немного "вибрации" — управляется через стиль
-        btn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 260 });
-
-        // отключаем эту кнопку (чтобы не нажимать её снова)
-        btn.disabled = true;
-
-        // если время вышло — заканчиваем
-        if (timeLeft <= 0) {
-          endGame();
-        }
+        timeLeft = Math.max(0,timeLeft-DELTA); updateTimeBar();
+        awaitingCorrect=true;
+        btn.disabled=true;
+        btn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration:260 });
+        if(timeLeft<=0) endGame();
       }
     }
 
     function endGame(){
       stopTimer();
-      // скрываем область с вопросами
-      document.querySelector('.question').style.display = 'none';
-      document.getElementById('hint').style.display = 'none';
-      document.getElementById('options').style.display = 'none';
-      endScreen.style.display = 'block';
-      finalPoints.textContent = score;
-
-      // отправляем результат в Telegram WebApp (если запущено внутри Telegram)
-      try {
-        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) {
-          Telegram.WebApp.sendData(JSON.stringify({ score }));
-        }
-      } catch(e){
-        // игнорируем ошибки (например, не внутри Telegram)
-        // console.log('sendData failed', e);
-      }
+      questionEl.style.display='none';
+      document.getElementById('hint').style.display='none';
+      optionsEl.style.display='none';
+      endScreen.style.display='block';
+      finalPoints.textContent=score;
+      if(score>bestScore){ bestScore=score; localStorage.setItem('wordBattleBest',bestScore); }
+      bestPoints.textContent=bestScore;
+      try{ if(window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) Telegram.WebApp.sendData(JSON.stringify({score})); } catch(e){}
     }
 
     function resetGame(){
-      // сбрасываем состояние и запускаем заново
-      timeLeft = MAX_TIME;
-      score = 0;
-      current = null;
-      awaitingCorrect = false;
-      scoreValue.textContent = '0';
-      questionEl.style.display = '';
-      document.getElementById('hint').style.display = '';
-      optionsEl.style.display = '';
-      endScreen.style.display = 'none';
-      renderQuestion();
-      updateTimeBar();
-      startTimer();
+      timeLeft=MAX_TIME; score=0; current=null; awaitingCorrect=false;
+      scoreValue.textContent='0';
+      questionEl.style.display=''; document.getElementById('hint').style.display=''; optionsEl.style.display='';
+      endScreen.style.display='none';
+      renderQuestion(); updateTimeBar(); startTimer();
     }
 
-    // Инициализация
-    function initGame(){
-      // Для этой версии слова локальны (WORDS_PLACEHOLDER). При желании их можно заменить программно.
-      renderQuestion();
-      updateTimeBar();
-      startTimer();
-    }
+    function initGame(){ renderQuestion(); updateTimeBar(); startTimer(); }
 
-    // Кнопки управления
-    playAgainBtn.addEventListener('click', () => {
-      // сбрасываем немного задержек
-      setTimeout(() => {
-        // восстановим кнопки
+    playAgainBtn.addEventListener('click', ()=>{
+      setTimeout(()=>{
         const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
-        allBtns.forEach(b => { b.classList.remove('correct','wrong'); b.style.opacity='1'; b.disabled = false; });
+        allBtns.forEach(b=>{ b.classList.remove('correct','wrong'); b.style.opacity='1'; b.disabled=false; });
         resetGame();
-        // покажем вопрос снова
-        document.querySelector('.question').style.display = '';
-        document.getElementById('hint').style.display = '';
-        document.getElementById('options').style.display = '';
-      }, 80);
+      },80);
     });
 
-    closeBtn.addEventListener('click', () => {
-      try {
-        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
-          Telegram.WebApp.close();
-        } else {
-          window.close && window.close();
-        }
-      } catch (e) {}
-    });
-
-    // Запуск игры при загрузке страницы
     window.addEventListener('load', initGame);
   </script>
 </body>
