@@ -4,229 +4,77 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Word Battle — Играй!</title>
-
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
   <style>
     :root{
-      --bg1: #7dd3fc;
-      --bg2: #fbcfe8;
-      --card: #ffffff;
-      --accent1: #06b6d4;
-      --accent2: #fb7185;
-      --btn-shadow: rgba(0,0,0,0.12);
-      --score-bg: #ffd166;
-      --good: #34D399;
-      --bad: #FB7181;
-      --max-width: 420px;
-      --radius: 18px;
+      --bg1: #7dd3fc; --bg2: #fbcfe8; --card: #ffffff; --accent1: #06b6d4;
+      --accent2: #fb7185; --btn-shadow: rgba(0,0,0,0.12); --score-bg: #ffd166;
+      --good: #34D399; --bad: #FB7181; --max-width: 420px; --radius: 18px;
     }
-
-    html,body{
-      height:100%;
-      margin:0;
-      font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
+    html,body{height:100%; margin:0; font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
       background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-    }
-
-    .container{
-      width:100%;
-      max-width:var(--max-width);
-      box-sizing:border-box;
-    }
-
-    .game-card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
-      border-radius:var(--radius);
-      padding:18px;
-      box-shadow: 0 10px 30px rgba(15,23,42,0.12);
-      overflow:hidden;
-    }
-
-    .top-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:12px;
-    }
-
-    .score {
-      display:flex;
-      align-items:center;
-      gap:10px;
-      background: linear-gradient(90deg, #ffefc0, #ffd166);
-      padding:8px 12px;
-      border-radius:999px;
-      font-weight:700;
-      box-shadow: 0 6px 14px var(--btn-shadow);
-      font-family: 'Nunito', sans-serif;
-      color:#1f2937;
-      transform: translateY(0);
-    }
-
-    .score .star {
-      width:26px; height:26px;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231f2937" d="M12 .587l3.668 7.431L23.6 9.75l-5.8 5.655L19.336 24 12 19.897 4.664 24l1.536-8.595L.4 9.75l7.932-1.732z"/></svg>') no-repeat center/contain;
-    }
-
-    .title{
-      font-size:18px;
-      font-weight:700;
-      color:#0f172a;
-    }
-
-    .time-bar-wrap{
-      width:100%;
-      height:14px;
-      background:linear-gradient(90deg, rgba(15,23,42,0.06), rgba(15,23,42,0.03));
-      border-radius:999px;
-      overflow:hidden;
-      box-shadow: inset 0 2px 6px rgba(15,23,42,0.04);
-      margin-bottom:16px;
-    }
-
-    .time-bar{
-      height:100%;
-      width:100%;
-      background: linear-gradient(90deg, #34D399 0%, #06b6d4 60%);
-      transition: width 0.35s ease;
-    }
-
-    .play-area{
-      text-align:center;
-      padding:8px 6px 14px 6px;
-    }
-
-    .question{
-      font-family:'Nunito', 'Poppins', sans-serif;
-      font-size:20px;
-      font-weight:800;
-      color:#0f172a;
-      margin:6px 0 12px 0;
-      padding:6px 10px;
-      background: linear-gradient(90deg, rgba(6,182,212,0.06), rgba(251,113,133,0.04));
-      border-radius:12px;
-      display:inline-block;
-      max-width:100%;
-      line-height:1.2;
-    }
-
-    .hint{
-      font-size:12px;
-      color:#475569;
-      margin-bottom:10px;
-    }
-
-    .options{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:6px;
-    }
-
-    .opt-btn{
-      padding:12px 8px;
-      border-radius:12px;
-      border:none;
-      font-weight:700;
-      font-size:15px;
-      cursor:pointer;
-      background: #fff;
-      box-shadow: 0 8px 18px rgba(2,6,23,0.06);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-      min-height:54px;
-    }
-    .opt-btn:active{ transform: translateY(3px); box-shadow: 0 4px 8px rgba(2,6,23,0.06); }
-
+      display:flex; align-items:center; justify-content:center; padding:20px;}
+    .container{width:100%; max-width:var(--max-width); box-sizing:border-box;}
+    .game-card{background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
+      border-radius:var(--radius); padding:18px; box-shadow: 0 10px 30px rgba(15,23,42,0.12); overflow:hidden;}
+    .top-row{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px;}
+    .score {display:flex; align-items:center; gap:10px; background: linear-gradient(90deg, #ffefc0, #ffd166);
+      padding:8px 12px; border-radius:999px; font-weight:700; box-shadow: 0 6px 14px var(--btn-shadow);
+      font-family: 'Nunito', sans-serif; color:#1f2937; transform: translateY(0);}
+    .score .star {width:26px; height:26px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231f2937" d="M12 .587l3.668 7.431L23.6 9.75l-5.8 5.655L19.336 24 12 19.897 4.664 24l1.536-8.595L.4 9.75l7.932-1.732z"/></svg>') no-repeat center/contain;}
+    .title{font-size:18px; font-weight:700; color:#0f172a;}
+    .time-bar-wrap{width:100%; height:14px; background:linear-gradient(90deg, rgba(15,23,42,0.06), rgba(15,23,42,0.03));
+      border-radius:999px; overflow:hidden; box-shadow: inset 0 2px 6px rgba(15,23,42,0.04); margin-bottom:16px;}
+    .time-bar{height:100%; width:100%; background: linear-gradient(90deg, #34D399 0%, #06b6d4 60%); transition: width 0.05s linear;}
+    .play-area{text-align:center; padding:8px 6px 14px 6px;}
+    .question{font-family:'Nunito','Poppins'; font-size:20px; font-weight:800; color:#0f172a; margin:6px 0 12px 0;
+      padding:6px 10px; background: linear-gradient(90deg, rgba(6,182,212,0.06), rgba(251,113,133,0.04)); border-radius:12px;
+      display:inline-block; max-width:100%; line-height:1.2;}
+    .hint{font-size:12px; color:#475569; margin-bottom:10px;}
+    .options{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px;}
+    .opt-btn{padding:12px 8px; border-radius:12px; border:none; font-weight:700; font-size:15px; cursor:pointer;
+      background:#fff; box-shadow:0 8px 18px rgba(2,6,23,0.06); transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease; min-height:54px;}
+    .opt-btn:active{transform: translateY(3px); box-shadow:0 4px 8px rgba(2,6,23,0.06);}
     .c-1{ background: linear-gradient(180deg,#60a5fa,#3b82f6); color:#fff; }
     .c-2{ background: linear-gradient(180deg,#f472b6,#fb7185); color:#fff; }
     .c-3{ background: linear-gradient(180deg,#34d399,#10b981); color:#fff; }
     .c-4{ background: linear-gradient(180deg,#f59e0b,#f97316); color:#fff; }
-
-    .opt-btn.correct {
-      box-shadow: 0 12px 26px rgba(52,211,153,0.24);
-      transform: scale(1.03);
-      outline: 4px solid rgba(52,211,153,0.08);
-    }
-    .opt-btn.wrong {
-      box-shadow: 0 12px 26px rgba(251,113,129,0.18);
-      transform: scale(0.98);
-      outline: 4px solid rgba(251,113,129,0.06);
-    }
-
-    .end-screen{
-      display:none;
-      text-align:center;
-      padding:14px;
-    }
-    .end-screen h2{
-      margin:6px 0 8px 0;
-      font-size:20px;
-      color:#0f172a;
-    }
-    .end-score{
-      font-family:'Nunito';
-      font-size:28px;
-      font-weight:900;
-      color:#0f172a;
-      background: linear-gradient(90deg,#fff,#fff6);
-      padding:8px 14px;
-      border-radius:12px;
-      display:inline-block;
-    }
-
-    .controls{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-      justify-content:center;
-    }
-    .primary{
-      background: linear-gradient(90deg,#06b6d4,#3b82f6);
-      color:white;
-      padding:10px 14px;
-      border-radius:12px;
-      border:none;
-      font-weight:700;
-      box-shadow: 0 10px 22px rgba(59,130,246,0.18);
-      cursor:pointer;
-    }
-
+    .opt-btn.correct{box-shadow:0 12px 26px rgba(52,211,153,0.24); transform: scale(1.03); outline:4px solid rgba(52,211,153,0.08);}
+    .opt-btn.wrong{box-shadow:0 12px 26px rgba(251,113,129,0.18); transform: scale(0.98); outline:4px solid rgba(251,113,129,0.06);}
+    .end-screen{display:none; text-align:center; padding:14px;}
+    .end-screen h2{margin:6px 0 8px 0; font-size:20px; color:#0f172a;}
+    .end-score{font-family:'Nunito'; font-size:28px; font-weight:900; color:#0f172a; background: linear-gradient(90deg,#fff,#fff6); padding:8px 14px; border-radius:12px; display:inline-block;}
+    .controls{display:flex; gap:10px; margin-top:12px; justify-content:center;}
+    .primary{background: linear-gradient(90deg,#06b6d4,#3b82f6); color:white; padding:10px 14px; border-radius:12px; border:none; font-weight:700; box-shadow:0 10px 22px rgba(59,130,246,0.18); cursor:pointer;}
+    .ghost{background:transparent; color:#0f172a; padding:10px 12px; border-radius:12px; border:2px solid rgba(15,23,42,0.06); cursor:pointer;}
+    @media (max-width:380px){.question{ font-size:18px; } .opt-btn{ font-size:14px; padding:10px 6px; min-height:48px; }}
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="game-card" role="application" aria-label="Word Battle game">
+  <div id="startScreen" style="text-align:center; padding:20px;">
+    <button id="startBtn" class="primary">Старт</button>
+  </div>
+
+  <div class="container" id="gameContainer" style="display:none;">
+    <div class="game-card">
       <div class="top-row">
-        <div class="score" aria-hidden="true">
-          <div class="star" aria-hidden="true"></div>
+        <div class="score">
+          <div class="star"></div>
           <div id="scoreValue">0</div>
         </div>
         <div class="title">Word Battle</div>
       </div>
-
-      <div class="time-bar-wrap" aria-hidden="true" title="Оставшееся время">
+      <div class="time-bar-wrap">
         <div id="timeBar" class="time-bar"></div>
       </div>
-
       <div class="play-area">
         <div class="question" id="question">Загрузка...</div>
         <div class="hint" id="hint">Выберите правильный перевод</div>
-
-        <div class="options" id="options" aria-live="polite" aria-atomic="true"></div>
-
+        <div class="options" id="options"></div>
         <div class="end-screen" id="endScreen">
-          <h2>Игра окончена!</h2>
+          <h2>Время вышло!</h2>
           <div class="end-score">Очки: <span id="finalPoints">0</span></div>
-          <div class="end-score">Рекорд: <span id="bestScore">0</span></div>
           <div class="controls">
             <button class="primary" id="playAgain">Играть снова</button>
           </div>
@@ -236,34 +84,8 @@
   </div>
 
   <script>
-    const MAX_TIME = 7;
-    const DELTA = 2;
-    const ON_EACH_SECOND = 1000;
-
-    function getUrlParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
-    }
-
-    let words = [];
-    try {
-      const wordsParam = getUrlParam("words");
-      if (wordsParam) words = JSON.parse(decodeURIComponent(wordsParam));
-    } catch(e){ console.error("Ошибка разбора words:", e); }
-
-    if (!words || words.length === 0) {
-      words = [
-        ["apple","яблоко"],["dog","собака"],["car","машина"],
-        ["house","дом"],["book","книга"]
-      ];
-    }
-
-    let timeLeft = MAX_TIME;
-    let score = 0;
-    let bestScore = parseInt(localStorage.getItem('wordBattleBest')||0);
-    let current = null;
-    let timerInterval = null;
-    let awaitingCorrect = false;
+    const MAX_TIME = 7, DELTA = 2, FPS = 60;
+    let timeLeft = MAX_TIME, score = 0, current = null, timerInterval = null, awaitingCorrect=false;
 
     const scoreValue = document.getElementById('scoreValue');
     const questionEl = document.getElementById('question');
@@ -271,36 +93,31 @@
     const timeBar = document.getElementById('timeBar');
     const endScreen = document.getElementById('endScreen');
     const finalPoints = document.getElementById('finalPoints');
-    const bestPoints = document.getElementById('bestScore');
     const playAgainBtn = document.getElementById('playAgain');
+    const startBtn = document.getElementById('startBtn');
+    const startScreen = document.getElementById('startScreen');
+    const gameContainer = document.getElementById('gameContainer');
 
-    const btnClasses = ['c-1','c-2','c-3','c-4'];
+    const btnClasses=['c-1','c-2','c-3','c-4'];
 
-    function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+    let words=[["apple","яблоко"],["dog","собака"],["car","машина"],["house","дом"],["book","книга"]];
 
-    function pickQuestion(){
-      if (!words || words.length === 0) return;
-      if (awaitingCorrect && current) return current;
-      current = words[Math.floor(Math.random()*words.length)];
-      awaitingCorrect = false;
-      return current;
-    }
-
+    function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+    function pickQuestion(){if(!words||words.length===0){questionEl.textContent="Список слов пуст"; optionsEl.innerHTML=""; stopTimer(); return;} if(awaitingCorrect&&current) return current; current=words[Math.floor(Math.random()*words.length)]; awaitingCorrect=false; return current;}
     function renderQuestion(){
-      const q = pickQuestion();
-      if(!q) return;
-      const [orig, trans] = q;
-      questionEl.textContent = `Как переводится «${orig}»?`;
-      let opts = [trans];
-      const pool = words.map(w=>w[1]).filter(t=>t!==trans);
+      const q=pickQuestion(); if(!q) return;
+      const [orig, trans]=q;
+      questionEl.textContent=`Как переводится «${orig}»?`;
+      let opts=[trans];
+      const pool=words.map(w=>w[1]).filter(t=>t!==trans);
       shuffleArray(pool);
-      for(let i=0; opts.length<4 && i<pool.length; i++) if(!opts.includes(pool[i])) opts.push(pool[i]);
+      for(let i=0;i<pool.length && opts.length<4;i++){if(!opts.includes(pool[i])) opts.push(pool[i]);}
       while(opts.length<4) opts.push("—");
       shuffleArray(opts);
-      optionsEl.innerHTML = '';
+      optionsEl.innerHTML='';
       for(let i=0;i<opts.length;i++){
-        const btn = document.createElement('button');
-        btn.className = 'opt-btn '+btnClasses[i%btnClasses.length];
+        const btn=document.createElement('button');
+        btn.className='opt-btn '+btnClasses[i%btnClasses.length];
         btn.type='button';
         btn.textContent=opts[i];
         btn.dataset.value=opts[i];
@@ -310,70 +127,57 @@
     }
 
     function updateTimeBar(){
-      const ratio = Math.max(0, Math.min(1, timeLeft/MAX_TIME));
-      timeBar.style.width = (ratio*100)+'%';
-      if(ratio>0.6) timeBar.style.background='linear-gradient(90deg, #34D399 0%, #06b6d4 60%)';
-      else if(ratio>0.3) timeBar.style.background='linear-gradient(90deg, #fbbf24 0%, #f97316 60%)';
-      else timeBar.style.background='linear-gradient(90deg, #fb7185 0%, #ef4444 60%)';
+      const ratio=Math.max(0, Math.min(1,timeLeft/MAX_TIME));
+      timeBar.style.width=(ratio*100)+'%';
     }
 
-    function startTimer(){ stopTimer(); timerInterval=setInterval(()=>{ timeLeft=Math.max(0,timeLeft-1); updateTimeBar(); if(timeLeft<=0) endGame(); }, ON_EACH_SECOND);}
-    function stopTimer(){ if(timerInterval){ clearInterval(timerInterval); timerInterval=null; } }
+    function startTimer(){
+      stopTimer();
+      const interval=1000/FPS;
+      timerInterval=setInterval(()=>{
+        timeLeft-=interval/1000;
+        if(timeLeft<=0){timeLeft=0; endGame();}
+        updateTimeBar();
+      }, interval);
+    }
+    function stopTimer(){if(timerInterval){clearInterval(timerInterval); timerInterval=null;}}
 
     function handleAnswer(btn){
-      if(!current) return;
-      const selected = btn.dataset.value;
-      const correct = current[1];
+      if(!current) return; const selected=btn.dataset.value; const correct=current[1];
       if(selected==="—") return;
-      const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
+      const allBtns=Array.from(document.querySelectorAll('.opt-btn'));
       if(selected===correct){
-        btn.classList.add('correct');
-        score++; scoreValue.textContent=score;
-        timeLeft = Math.min(MAX_TIME,timeLeft+DELTA); updateTimeBar();
-        awaitingCorrect=false;
-        allBtns.forEach(b=>{ if(b!==btn) b.style.opacity='0.7'; });
-        setTimeout(()=>{ renderQuestion(); },350);
-      } else {
-        btn.classList.add('wrong');
-        timeLeft = Math.max(0,timeLeft-DELTA); updateTimeBar();
-        awaitingCorrect=true;
-        btn.disabled=true;
-        btn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration:260 });
-        if(timeLeft<=0) endGame();
+        btn.classList.add('correct'); score++; scoreValue.textContent=score;
+        timeLeft=Math.min(MAX_TIME,timeLeft+DELTA); updateTimeBar(); awaitingCorrect=false;
+        allBtns.forEach(b=>{if(b!==btn) b.style.opacity='0.7';});
+        setTimeout(()=>{renderQuestion();},350);
+      } else{
+        btn.classList.add('wrong'); timeLeft=Math.max(0,timeLeft-DELTA); updateTimeBar(); awaitingCorrect=true;
+        btn.disabled=true; btn.animate([{transform:'translateX(0)'},{transform:'translateX(-6px)'},{transform:'translateX(6px)'},{transform:'translateX(0)'}],{duration:260});
+        if(timeLeft<=0){endGame();}
       }
     }
 
     function endGame(){
       stopTimer();
-      questionEl.style.display='none';
-      document.getElementById('hint').style.display='none';
-      optionsEl.style.display='none';
-      endScreen.style.display='block';
-      finalPoints.textContent=score;
-      if(score>bestScore){ bestScore=score; localStorage.setItem('wordBattleBest',bestScore); }
-      bestPoints.textContent=bestScore;
-      try{ if(window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) Telegram.WebApp.sendData(JSON.stringify({score})); } catch(e){}
+      questionEl.style.display='none'; document.getElementById('hint').style.display='none'; optionsEl.style.display='none';
+      endScreen.style.display='block'; finalPoints.textContent=score;
+      try{if(window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) Telegram.WebApp.sendData(JSON.stringify({score}));}catch(e){}
     }
 
     function resetGame(){
       timeLeft=MAX_TIME; score=0; current=null; awaitingCorrect=false;
-      scoreValue.textContent='0';
-      questionEl.style.display=''; document.getElementById('hint').style.display=''; optionsEl.style.display='';
-      endScreen.style.display='none';
+      scoreValue.textContent='0'; questionEl.style.display=''; document.getElementById('hint').style.display=''; optionsEl.style.display=''; endScreen.style.display='none';
       renderQuestion(); updateTimeBar(); startTimer();
     }
 
-    function initGame(){ renderQuestion(); updateTimeBar(); startTimer(); }
+    playAgainBtn.addEventListener('click', ()=>{setTimeout(()=>{
+      const allBtns=Array.from(document.querySelectorAll('.opt-btn'));
+      allBtns.forEach(b=>{b.classList.remove('correct','wrong'); b.style.opacity='1'; b.disabled=false;});
+      resetGame();
+    },80);});
 
-    playAgainBtn.addEventListener('click', ()=>{
-      setTimeout(()=>{
-        const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
-        allBtns.forEach(b=>{ b.classList.remove('correct','wrong'); b.style.opacity='1'; b.disabled=false; });
-        resetGame();
-      },80);
-    });
-
-    window.addEventListener('load', initGame);
+    startBtn.addEventListener('click', initGame);
   </script>
 </body>
 </html>
