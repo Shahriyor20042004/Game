@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Word Battle — Играй!</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1: #7dd3fc; /* light cyan */
+      --bg2: #fbcfe8; /* pink */
+      --card: #ffffff;
+      --accent1: #06b6d4; /* cyan */
+      --accent2: #fb7185; /* rose */
+      --btn-shadow: rgba(0,0,0,0.12);
+      --score-bg: #ffd166;
+      --good: #34D399;
+      --bad: #FB7181;
+      --max-width: 420px;
+      --radius: 18px;
+    }
+
+    html,body{
+      height:100%;
+      margin:0;
+      font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--max-width);
+      box-sizing:border-box;
+    }
+
+    .game-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
+      border-radius:var(--radius);
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.12);
+      overflow:hidden;
+    }
+
+    .top-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .score {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background: linear-gradient(90deg, #ffefc0, #ffd166);
+      padding:8px 12px;
+      border-radius:999px;
+      font-weight:700;
+      box-shadow: 0 6px 14px var(--btn-shadow);
+      font-family: 'Nunito', sans-serif;
+      color:#1f2937;
+      transform: translateY(0);
+    }
+
+    .score .star {
+      width:26px; height:26px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231f2937" d="M12 .587l3.668 7.431L23.6 9.75l-5.8 5.655L19.336 24 12 19.897 4.664 24l1.536-8.595L.4 9.75l7.932-1.732z"/></svg>') no-repeat center/contain;
+    }
+
+    .title{
+      font-size:18px;
+      font-weight:700;
+      color:#0f172a;
+    }
+
+    /* Progress bar (time line) */
+    .time-bar-wrap{
+      width:100%;
+      height:14px;
+      background:linear-gradient(90deg, rgba(15,23,42,0.06), rgba(15,23,42,0.03));
+      border-radius:999px;
+      overflow:hidden;
+      box-shadow: inset 0 2px 6px rgba(15,23,42,0.04);
+      margin-bottom:16px;
+    }
+
+    .time-bar{
+      height:100%;
+      width:100%;
+      background: linear-gradient(90deg, #34D399 0%, #06b6d4 60%);
+      transition: width 0.35s ease;
+    }
+
+    /* center area */
+    .play-area{
+      text-align:center;
+      padding:8px 6px 14px 6px;
+    }
+
+    .question{
+      font-family:'Nunito', 'Poppins', sans-serif;
+      font-size:20px;
+      font-weight:800;
+      color:#0f172a;
+      margin:6px 0 12px 0;
+      padding:6px 10px;
+      background: linear-gradient(90deg, rgba(6,182,212,0.06), rgba(251,113,133,0.04));
+      border-radius:12px;
+      display:inline-block;
+      max-width:100%;
+      line-height:1.2;
+    }
+
+    .hint{
+      font-size:12px;
+      color:#475569;
+      margin-bottom:10px;
+    }
+
+    /* options grid */
+    .options{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:6px;
+    }
+
+    .opt-btn{
+      padding:12px 8px;
+      border-radius:12px;
+      border:none;
+      font-weight:700;
+      font-size:15px;
+      cursor:pointer;
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(2,6,23,0.06);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      min-height:54px;
+    }
+    .opt-btn:active{ transform: translateY(3px); box-shadow: 0 4px 8px rgba(2,6,23,0.06); }
+
+    /* color palette for buttons */
+    .c-1{ background: linear-gradient(180deg,#60a5fa,#3b82f6); color:#fff; }
+    .c-2{ background: linear-gradient(180deg,#f472b6,#fb7185); color:#fff; }
+    .c-3{ background: linear-gradient(180deg,#34d399,#10b981); color:#fff; }
+    .c-4{ background: linear-gradient(180deg,#f59e0b,#f97316); color:#fff; }
+
+    .opt-btn.correct {
+      box-shadow: 0 12px 26px rgba(52,211,153,0.24);
+      transform: scale(1.03);
+      outline: 4px solid rgba(52,211,153,0.08);
+    }
+    .opt-btn.wrong {
+      box-shadow: 0 12px 26px rgba(251,113,129,0.18);
+      transform: scale(0.98);
+      outline: 4px solid rgba(251,113,129,0.06);
+    }
+
+    /* end screen */
+    .end-screen{
+      display:none;
+      text-align:center;
+      padding:14px;
+    }
+    .end-screen h2{
+      margin:6px 0 8px 0;
+      font-size:20px;
+      color:#0f172a;
+    }
+    .end-score{
+      font-family:'Nunito';
+      font-size:28px;
+      font-weight:900;
+      color:#0f172a;
+      background: linear-gradient(90deg,#fff,#fff6);
+      padding:8px 14px;
+      border-radius:12px;
+      display:inline-block;
+    }
+
+    .controls{
+      display:flex;
+      gap:10px;
+      margin-top:12px;
+      justify-content:center;
+    }
+    .primary{
+      background: linear-gradient(90deg,#06b6d4,#3b82f6);
+      color:white;
+      padding:10px 14px;
+      border-radius:12px;
+      border:none;
+      font-weight:700;
+      box-shadow: 0 10px 22px rgba(59,130,246,0.18);
+      cursor:pointer;
+    }
+    .ghost{
+      background:transparent;
+      color:#0f172a;
+      padding:10px 12px;
+      border-radius:12px;
+      border:2px solid rgba(15,23,42,0.06);
+      cursor:pointer;
+    }
+
+    /* small screens tweak */
+    @media (max-width:380px){
+      .question{ font-size:18px; }
+      .opt-btn{ font-size:14px; padding:10px 6px; min-height:48px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="game-card" role="application" aria-label="Word Battle game">
+      <div class="top-row">
+        <div class="score" aria-hidden="true">
+          <div class="star" aria-hidden="true"></div>
+          <div id="scoreValue">0</div>
+        </div>
+        <div class="title">Word Battle</div>
+      </div>
+
+      <div class="time-bar-wrap" aria-hidden="true" title="Оставшееся время">
+        <div id="timeBar" class="time-bar"></div>
+      </div>
+
+      <div class="play-area">
+        <div class="question" id="question">Загрузка...</div>
+        <div class="hint" id="hint">Выберите правильный перевод</div>
+
+        <div class="options" id="options" aria-live="polite" aria-atomic="true">
+          <!-- Buttons будут вставлены сюда -->
+        </div>
+
+        <div class="end-screen" id="endScreen">
+          <h2>Время вышло!</h2>
+          <div class="end-score">Очки: <span id="finalPoints">0</span></div>
+          <div class="controls">
+            <button class="primary" id="playAgain">Играть снова</button>
+            <button class="ghost" id="closeBtn">Закрыть</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /***********************
+     * Настройки игры
+     ***********************/
+    const MAX_TIME = 7;          // макс. секунд в раунде
+    const DELTA = 2;             // прибавлять/убавлять (сек)
+    const ON_EACH_SECOND = 1000; // тик таймера (1 сек)
+    // Функция получения параметра из URL
+function getUrlParam(name) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(name);
+}
+
+// Пытаемся взять слова из URL
+let words = [];
+try {
+  const wordsParam = getUrlParam("words");
+  if (wordsParam) {
+    words = JSON.parse(decodeURIComponent(wordsParam));
+  }
+} catch (e) {
+  console.error("Ошибка разбора параметра words:", e);
+}
+
+// Если параметра нет — используем запасной список
+if (!words || words.length === 0) {
+  words = [
+    ["apple", "яблоко"],
+    ["dog", "собака"],
+    ["car", "машина"],
+    ["house", "дом"],
+    ["book", "книга"]
+  ];
+}
+
+    let timeLeft = MAX_TIME;
+    let score = 0;
+    let current = null;
+    let timerInterval = null;
+    let awaitingCorrect = false; // если пользователь дал неверный ответ и должен снова ответить на тот же вопрос
+
+    // DOM
+    const scoreValue = document.getElementById('scoreValue');
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const timeBar = document.getElementById('timeBar');
+    const endScreen = document.getElementById('endScreen');
+    const finalPoints = document.getElementById('finalPoints');
+    const playAgainBtn = document.getElementById('playAgain');
+    const closeBtn = document.getElementById('closeBtn');
+
+    // Установим яркие классы циклично
+    const btnClasses = ['c-1','c-2','c-3','c-4'];
+
+    function shuffleArray(a){
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function pickQuestion(){
+      if (!words || words.length === 0) {
+        questionEl.textContent = "Список слов пуст. Добавьте слова в боте.";
+        optionsEl.innerHTML = "";
+        stopTimer();
+        return;
+      }
+      // если ждём пока пользователь ответит правильно на текущий — не менять вопрос
+      if (awaitingCorrect && current) return current;
+
+      current = words[Math.floor(Math.random()*words.length)];
+      awaitingCorrect = false;
+      return current;
+    }
+
+    function renderQuestion(){
+      const q = pickQuestion();
+      if(!q) return;
+      const [orig, trans] = q;
+      questionEl.textContent = `Как переводится «${orig}»?`;
+
+      // генерируем варианты
+      let opts = [trans];
+      const translationsPool = words.map(w => w[1]).filter(t => t !== trans);
+      shuffleArray(translationsPool);
+      for(let i=0; opts.length<4 && i<translationsPool.length; i++){
+        if(!opts.includes(translationsPool[i])) opts.push(translationsPool[i]);
+      }
+      // На случай малого количества слов — дублируем разные варианты (без повторения корректного)
+      while(opts.length < 4){
+        opts.push("—");
+      }
+      shuffleArray(opts);
+
+      optionsEl.innerHTML = '';
+      for(let i=0;i<opts.length;i++){
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn ' + btnClasses[i % btnClasses.length];
+        btn.type = 'button';
+        btn.textContent = opts[i];
+        btn.dataset.value = opts[i];
+        btn.onclick = () => handleAnswer(btn);
+        optionsEl.appendChild(btn);
+      }
+    }
+
+    function updateTimeBar(){
+      const ratio = Math.max(0, Math.min(1, timeLeft / MAX_TIME));
+      timeBar.style.width = (ratio * 100) + '%';
+      // color shift: green -> yellow -> red
+      if (ratio > 0.6) {
+        timeBar.style.background = 'linear-gradient(90deg, #34D399 0%, #06b6d4 60%)';
+      } else if (ratio > 0.3) {
+        timeBar.style.background = 'linear-gradient(90deg, #fbbf24 0%, #f97316 60%)';
+      } else {
+        timeBar.style.background = 'linear-gradient(90deg, #fb7185 0%, #ef4444 60%)';
+      }
+    }
+
+    function startTimer(){
+      stopTimer();
+      timerInterval = setInterval(() => {
+        timeLeft = Math.max(0, timeLeft - 1);
+        updateTimeBar();
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }, ON_EACH_SECOND);
+    }
+    function stopTimer(){
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function handleAnswer(btn){
+      if (!current) return;
+      const selected = btn.dataset.value;
+      const correct = current[1];
+
+      // если кнопка "пустая" (в случае малого количества слов)
+      if (selected === "—") return;
+
+      // заблокируем кнопки ненадолго, чтобы показать эффект
+      const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
+
+      if (selected === correct){
+        // пометить правильную
+        btn.classList.add('correct');
+        // прибавляем очко
+        score++;
+        scoreValue.textContent = score;
+        // добавляем время (по 2 секунды), но не больше MAX_TIME
+        timeLeft = Math.min(MAX_TIME, timeLeft + DELTA);
+        updateTimeBar();
+        // готов к следующему вопросу
+        awaitingCorrect = false;
+
+        // небольшой визуальный эффект — пометим другие кнопки приглушёнными
+        allBtns.forEach(b => { if(b !== btn) b.style.opacity = '0.7'; });
+
+        // через 350мс — новый вопрос
+        setTimeout(() => {
+          renderQuestion();
+        }, 350);
+      } else {
+        // неправильный: отметим и уменьшим время
+        btn.classList.add('wrong');
+        // уменьшаем время
+        timeLeft = Math.max(0, timeLeft - DELTA);
+        updateTimeBar();
+        // помечаем, что нужно снова ответить на тот же вопрос
+        awaitingCorrect = true;
+        // немного "вибрации" — управляется через стиль
+        btn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration: 260 });
+
+        // отключаем эту кнопку (чтобы не нажимать её снова)
+        btn.disabled = true;
+
+        // если время вышло — заканчиваем
+        if (timeLeft <= 0) {
+          endGame();
+        }
+      }
+    }
+
+    function endGame(){
+      stopTimer();
+      // скрываем область с вопросами
+      document.querySelector('.question').style.display = 'none';
+      document.getElementById('hint').style.display = 'none';
+      document.getElementById('options').style.display = 'none';
+      endScreen.style.display = 'block';
+      finalPoints.textContent = score;
+
+      // отправляем результат в Telegram WebApp (если запущено внутри Telegram)
+      try {
+        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) {
+          Telegram.WebApp.sendData(JSON.stringify({ score }));
+        }
+      } catch(e){
+        // игнорируем ошибки (например, не внутри Telegram)
+        // console.log('sendData failed', e);
+      }
+    }
+
+    function resetGame(){
+      // сбрасываем состояние и запускаем заново
+      timeLeft = MAX_TIME;
+      score = 0;
+      current = null;
+      awaitingCorrect = false;
+      scoreValue.textContent = '0';
+      questionEl.style.display = '';
+      document.getElementById('hint').style.display = '';
+      optionsEl.style.display = '';
+      endScreen.style.display = 'none';
+      renderQuestion();
+      updateTimeBar();
+      startTimer();
+    }
+
+    // Инициализация
+    function initGame(){
+      // Для этой версии слова локальны (WORDS_PLACEHOLDER). При желании их можно заменить программно.
+      renderQuestion();
+      updateTimeBar();
+      startTimer();
+    }
+
+    // Кнопки управления
+    playAgainBtn.addEventListener('click', () => {
+      // сбрасываем немного задержек
+      setTimeout(() => {
+        // восстановим кнопки
+        const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
+        allBtns.forEach(b => { b.classList.remove('correct','wrong'); b.style.opacity='1'; b.disabled = false; });
+        resetGame();
+        // покажем вопрос снова
+        document.querySelector('.question').style.display = '';
+        document.getElementById('hint').style.display = '';
+        document.getElementById('options').style.display = '';
+      }, 80);
+    });
+
+    closeBtn.addEventListener('click', () => {
+      try {
+        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.close) {
+          Telegram.WebApp.close();
+        } else {
+          window.close && window.close();
+        }
+      } catch (e) {}
+    });
+
+    // Запуск игры при загрузке страницы
+    window.addEventListener('load', initGame);
+  </script>
+</body>
+</html>
