@@ -16,9 +16,6 @@
       --accent1: #06b6d4;
       --accent2: #fb7185;
       --btn-shadow: rgba(0,0,0,0.12);
-      --score-bg: #ffd166;
-      --good: #34D399;
-      --bad: #FB7181;
       --max-width: 420px;
       --radius: 18px;
     }
@@ -43,7 +40,7 @@
     }
 
     .game-card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.98));
+      background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.98));
       border-radius:var(--radius);
       padding:18px;
       box-shadow: 0 10px 30px rgba(15,23,42,0.12);
@@ -69,19 +66,11 @@
       box-shadow: 0 6px 14px var(--btn-shadow);
       font-family: 'Nunito', sans-serif;
       color:#1f2937;
-      transform: translateY(0);
     }
 
-    .score .star {
-      width:26px; height:26px;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231f2937" d="M12 .587l3.668 7.431L23.6 9.75l-5.8 5.655L19.336 24 12 19.897 4.664 24l1.536-8.595L.4 9.75l7.932-1.732z"/></svg>') no-repeat center/contain;
-    }
+    .score .star { width:24px; height:24px; background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="%231f2937" d="M12 .587l3.668 7.431L23.6 9.75l-5.8 5.655L19.336 24 12 19.897 4.664 24l1.536-8.595L.4 9.75l7.932-1.732z"/></svg>') no-repeat center/contain; }
 
-    .title{
-      font-size:18px;
-      font-weight:700;
-      color:#0f172a;
-    }
+    .title{ font-size:18px; font-weight:700; color:#0f172a; }
 
     .time-bar-wrap{
       width:100%;
@@ -97,13 +86,11 @@
       height:100%;
       width:100%;
       background: linear-gradient(90deg, #34D399 0%, #06b6d4 60%);
-      transition: width 0.35s ease;
+      /* width обновляется JS по displayTime */
+      transition: background 0.2s linear;
     }
 
-    .play-area{
-      text-align:center;
-      padding:8px 6px 14px 6px;
-    }
+    .play-area{ text-align:center; padding:8px 6px 14px 6px; }
 
     .question{
       font-family:'Nunito', 'Poppins', sans-serif;
@@ -119,18 +106,9 @@
       line-height:1.2;
     }
 
-    .hint{
-      font-size:12px;
-      color:#475569;
-      margin-bottom:10px;
-    }
+    .hint{ font-size:12px; color:#475569; margin-bottom:10px; }
 
-    .options{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:6px;
-    }
+    .options{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:6px; }
 
     .opt-btn{
       padding:12px 8px;
@@ -141,70 +119,31 @@
       cursor:pointer;
       background: #fff;
       box-shadow: 0 8px 18px rgba(2,6,23,0.06);
-      transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease, background .18s ease;
       min-height:54px;
     }
-    .opt-btn:active{ transform: translateY(3px); box-shadow: 0 4px 8px rgba(2,6,23,0.06); }
+    .opt-btn:active{ transform: translateY(3px); }
 
-    .c-1{ background: linear-gradient(180deg,#60a5fa,#3b82f6); color:#fff; }
-    .c-2{ background: linear-gradient(180deg,#f472b6,#fb7185); color:#fff; }
-    .c-3{ background: linear-gradient(180deg,#34d399,#10b981); color:#fff; }
-    .c-4{ background: linear-gradient(180deg,#f59e0b,#f97316); color:#fff; }
+    .opt-btn.correct{ box-shadow: 0 12px 26px rgba(52,211,153,0.24); transform: scale(1.03); outline:4px solid rgba(52,211,153,0.08); background:#10b981; color:#fff; }
+    .opt-btn.wrong{ box-shadow: 0 12px 26px rgba(251,113,129,0.18); transform: scale(.98); outline:4px solid rgba(251,113,129,0.06); background:#fb7185; color:#fff; }
 
-    .opt-btn.correct {
-      box-shadow: 0 12px 26px rgba(52,211,153,0.24);
-      transform: scale(1.03);
-      outline: 4px solid rgba(52,211,153,0.08);
-    }
-    .opt-btn.wrong {
-      box-shadow: 0 12px 26px rgba(251,113,129,0.18);
-      transform: scale(0.98);
-      outline: 4px solid rgba(251,113,129,0.06);
-    }
+    .end-screen{ display:none; text-align:center; padding:14px; }
+    .end-screen h2{ margin:8px 0; font-size:20px; }
+    .end-score{ font-family:'Nunito'; font-size:24px; font-weight:800; color:#0f172a; background: linear-gradient(90deg,#fff,#fff6); padding:8px 12px; border-radius:12px; display:inline-block; margin:6px 8px; }
 
-    .end-screen{
-      display:none;
-      text-align:center;
-      padding:14px;
-    }
-    .end-screen h2{
-      margin:6px 0 8px 0;
-      font-size:20px;
-      color:#0f172a;
-    }
-    .end-score{
-      font-family:'Nunito';
-      font-size:28px;
-      font-weight:900;
-      color:#0f172a;
-      background: linear-gradient(90deg,#fff,#fff6);
-      padding:8px 14px;
-      border-radius:12px;
-      display:inline-block;
-    }
+    .controls{ display:flex; gap:10px; margin-top:12px; justify-content:center; }
+    .primary{ background: linear-gradient(90deg,#06b6d4,#3b82f6); color:white; padding:10px 14px; border-radius:12px; border:none; font-weight:700; cursor:pointer; }
 
-    .controls{
-      display:flex;
-      gap:10px;
-      margin-top:12px;
-      justify-content:center;
+    @media (max-width:380px){
+      .question{ font-size:18px; }
+      .opt-btn{ font-size:14px; padding:10px 6px; min-height:48px; }
     }
-    .primary{
-      background: linear-gradient(90deg,#06b6d4,#3b82f6);
-      color:white;
-      padding:10px 14px;
-      border-radius:12px;
-      border:none;
-      font-weight:700;
-      box-shadow: 0 10px 22px rgba(59,130,246,0.18);
-      cursor:pointer;
-    }
-
   </style>
 </head>
 <body>
   <div id="startScreen" style="text-align:center; padding:20px;">
     <h2>Добро пожаловать в Word Battle!</h2>
+    <p style="color:#0f172a; margin:6px 0 14px;">Тренируй слова быстро — на время. Правильный ответ +2s (до 7s), неправильный —2s. Удачи!</p>
     <button id="startBtn" class="primary">Начать игру</button>
   </div>
 
@@ -226,7 +165,9 @@
         <div class="question" id="question">Загрузка...</div>
         <div class="hint" id="hint">Выберите правильный перевод</div>
 
-        <div class="options" id="options" aria-live="polite" aria-atomic="true"></div>
+        <div class="options" id="options" aria-live="polite" aria-atomic="true">
+          <!-- варианты появятся тут -->
+        </div>
 
         <div class="end-screen" id="endScreen">
           <h2>Игра окончена!</h2>
@@ -241,192 +182,285 @@
   </div>
 
   <script>
-    const MAX_TIME = 7;
-    const DELTA = 2;
-    const ON_EACH_SECOND = 1000;
+    // Настройки
+    const MAX_TIME = 7;   // максимальное время (сек)
+    const DELTA = 2;      // прибавлять/убавлять (сек)
+    const SMOOTH_SPEED = 8; // скорость подстройки displayTime к targetTime (чем больше — тем резче)
 
-    function getUrlParam(name) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get(name);
-    }
+    // Пул слов (при интеграции — заменяется из URL / WebApp param)
+    let words = [
+      ["apple", "яблоко"],
+      ["dog", "собака"],
+      ["car", "машина"],
+      ["house", "дом"],
+      ["book", "книга"],
+      ["sun", "солнце"],
+      ["water", "вода"],
+      ["tree", "дерево"]
+    ];
 
-    let words = [];
-    try {
-      const wordsParam = getUrlParam("words");
-      if (wordsParam) words = JSON.parse(decodeURIComponent(wordsParam));
-    } catch(e){ console.error("Ошибка разбора words:", e); }
-
-    if (!words || words.length === 0) {
-      words = [
-        ["apple","яблоко"],["dog","собака"],["car","машина"],
-        ["house","дом"],["book","книга"]
-      ];
-    }
-
-    let timeLeft = MAX_TIME;
+    // Состояние
     let score = 0;
-    let bestScore = parseInt(localStorage.getItem('wordBattleBest')||0);
+    let bestScore = parseInt(localStorage.getItem('wordBattleBest') || '0', 10);
     let current = null;
-    let timerInterval = null;
-    let awaitingCorrect = false;
+    let awaitingCorrect = false; // если пользователь дал неверный ответ — нужно ответить на тот же вопрос
+    let targetTime = MAX_TIME;   // реальное оставшееся время (уменьшается непрерывно)
+    let displayTime = MAX_TIME;  // отображаемое время (плавно подстраивается к targetTime)
+    let lastTimestamp = null;
+    let rafId = null;
 
+    // DOM
     const scoreValue = document.getElementById('scoreValue');
+    const timeBar = document.getElementById('timeBar');
     const questionEl = document.getElementById('question');
     const optionsEl = document.getElementById('options');
-    const timeBar = document.getElementById('timeBar');
     const endScreen = document.getElementById('endScreen');
     const finalPoints = document.getElementById('finalPoints');
     const bestPoints = document.getElementById('bestScore');
+    const startBtn = document.getElementById('startBtn');
     const playAgainBtn = document.getElementById('playAgain');
 
-    const btnClasses = ['c-1','c-2','c-3','c-4'];
+    // Утилиты
+    function shuffleArray(a){
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
 
-    function shuffleArray(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-
-    function pickQuestion(){
-      if (!words || words.length === 0) return;
+    function pickQuestion() {
+      // если пользователь должен снова ответить на текущий вопрос — не меняем его
       if (awaitingCorrect && current) return current;
-      current = words[Math.floor(Math.random()*words.length)];
+      current = words[Math.floor(Math.random() * words.length)];
       awaitingCorrect = false;
       return current;
     }
 
-    function renderQuestion(){
+    function renderQuestion() {
       const q = pickQuestion();
-      if(!q) return;
+      if (!q) return;
       const [orig, trans] = q;
       questionEl.textContent = `Как переводится «${orig}»?`;
+
+      // варианты
       let opts = [trans];
-      const pool = words.map(w=>w[1]).filter(t=>t!==trans);
+      const pool = words.map(w => w[1]).filter(t => t !== trans);
       shuffleArray(pool);
-      for(let i=0; opts.length<4 && i<pool.length; i++) if(!opts.includes(pool[i])) opts.push(pool[i]);
-      while(opts.length<4) opts.push("—");
+      for (let i = 0; opts.length < 4 && i < pool.length; i++) {
+        if (!opts.includes(pool[i])) opts.push(pool[i]);
+      }
+      // если мало слов — заполнить заглушками
+      while (opts.length < 4) opts.push("—");
       shuffleArray(opts);
+
+      // рендер кнопок
       optionsEl.innerHTML = '';
-      for(let i=0;i<opts.length;i++){
+      opts.forEach((opt) => {
         const btn = document.createElement('button');
-        btn.className = 'opt-btn '+btnClasses[i%btnClasses.length];
-        btn.type='button';
-        btn.textContent=opts[i];
-        btn.dataset.value=opts[i];
-        btn.onclick=()=>handleAnswer(btn);
+        btn.className = 'opt-btn';
+        btn.type = 'button';
+        btn.textContent = opt;
+        btn.dataset.value = opt;
+        btn.onclick = () => handleAnswer(btn);
         optionsEl.appendChild(btn);
+      });
+    }
+
+    function updateTimeBar() {
+      // используем displayTime (плавное значение)
+      const ratio = Math.max(0, Math.min(1, displayTime / MAX_TIME));
+      timeBar.style.width = (ratio * 100) + '%';
+
+      // смена цвета по оставшемуся времени (опционально)
+      if (ratio > 0.6) {
+        timeBar.style.background = 'linear-gradient(90deg, #34D399 0%, #06b6d4 60%)';
+      } else if (ratio > 0.3) {
+        timeBar.style.background = 'linear-gradient(90deg, #fbbf24 0%, #f97316 60%)';
+      } else {
+        timeBar.style.background = 'linear-gradient(90deg, #fb7185 0%, #ef4444 60%)';
       }
     }
 
-    function updateTimeBar(){
-      const ratio = Math.max(0, Math.min(1, timeLeft/MAX_TIME));
-      timeBar.style.width = (ratio*100)+'%';
-      if(ratio>0.6) timeBar.style.background='linear-gradient(90deg, #34D399 0%, #06b6d4 60%)';
-      else if(ratio>0.3) timeBar.style.background='linear-gradient(90deg, #fbbf24 0%, #f97316 60%)';
-      else timeBar.style.background='linear-gradient(90deg, #fb7185 0%, #ef4444 60%)';
+    // главный цикл — уменьшает targetTime непрерывно и плавно подстраивает displayTime
+    function loop(now) {
+      if (!lastTimestamp) lastTimestamp = now;
+      const dt = (now - lastTimestamp) / 1000;
+      lastTimestamp = now;
+
+      // уменьшаем targetTime на прошедшее время
+      targetTime = Math.max(0, targetTime - dt);
+
+      // плавно подтягиваем displayTime к targetTime
+      // factor = 1 - exp(-k * dt)  ~ используем приближение линейного сглаживания
+      const factor = Math.min(1, SMOOTH_SPEED * dt);
+      displayTime += (targetTime - displayTime) * factor;
+
+      updateTimeBar();
+
+      if (targetTime <= 0) {
+        // время вышло
+        endGame();
+        return;
+      }
+
+      rafId = requestAnimationFrame(loop);
     }
 
-    let startTime = null;
-let animationFrame = null;
-
-function startTimer() {
-  stopTimer();
-  startTime = performance.now();
-
-  function tick(now) {
-    const elapsed = (now - startTime) / 1000; // прошедшее время в секундах
-    timeLeft = Math.max(0, MAX_TIME - elapsed);
-
-    updateTimeBar();
-
-    if (timeLeft > 0) {
-      animationFrame = requestAnimationFrame(tick);
-    } else {
-      endGame();
+    function startTimer() {
+      stopTimer();
+      lastTimestamp = null;
+      rafId = requestAnimationFrame(loop);
     }
-  }
 
-  animationFrame = requestAnimationFrame(tick);
-}
+    function stopTimer() {
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
+    }
 
-function stopTimer() {
-  if (animationFrame) {
-    cancelAnimationFrame(animationFrame);
-    animationFrame = null;
-  }
-}
+    function adjustTarget(delta) {
+      // сразу корректируем targetTime (и он будет плавно подтянут displayTime)
+      targetTime = Math.max(0, Math.min(MAX_TIME, targetTime + delta));
+      // если targetTime reached zero here, loop will call endGame soon; but we can check:
+      if (targetTime <= 0) {
+        // ensure displayTime moves to zero quickly
+        displayTime = 0;
+        updateTimeBar();
+        endGame();
+      }
+    }
 
-
-    function handleAnswer(btn){
-      if(!current) return;
+    function handleAnswer(btn) {
+      if (!current) return;
       const selected = btn.dataset.value;
       const correct = current[1];
-      if(selected==="—") return;
+
+      // ignore placeholder
+      if (selected === "—") return;
+
+      // disable all briefly to avoid double clicks
       const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
-      if(selected===correct){
+      allBtns.forEach(b => b.disabled = true);
+
+      if (selected === correct) {
+        // mark correct
         btn.classList.add('correct');
-        score++; scoreValue.textContent=score;
-        function smoothTimeChange(newValue) {
-  const start = timeLeft;
-  const end = Math.max(0, Math.min(MAX_TIME, newValue));
-  const duration = 300; // мс
-  const startTime = performance.now();
 
-  function animate(now) {
-    const progress = Math.min(1, (now - startTime) / duration);
-    timeLeft = start + (end - start) * progress;
-    updateTimeBar();
-    if (progress < 1) requestAnimationFrame(animate);
-  }
+        // score +1
+        score++;
+        scoreValue.textContent = score;
 
-  requestAnimationFrame(animate);
-}
-        awaitingCorrect=false;
-        allBtns.forEach(b=>{ if(b!==btn) b.style.opacity='0.7'; });
-        setTimeout(()=>{ renderQuestion(); },350);
+        // increase time (плавно)
+        adjustTarget(DELTA);
+
+        // stop blocking — подождём немного для эффекта и затем следующий вопрос
+        setTimeout(() => {
+          // восстановим кнопки for next question
+          const btns = Array.from(document.querySelectorAll('.opt-btn'));
+          btns.forEach(b => { b.classList.remove('correct','wrong'); b.disabled = false; b.style.opacity = ''; });
+
+          awaitingCorrect = false;
+          renderQuestion();
+        }, 320);
       } else {
+        // wrong
         btn.classList.add('wrong');
-        timeLeft = Math.max(0,timeLeft-DELTA); updateTimeBar();
-        awaitingCorrect=true;
-        btn.disabled=true;
-        btn.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-6px)' }, { transform: 'translateX(6px)' }, { transform: 'translateX(0)' }], { duration:260 });
-        if(timeLeft<=0) endGame();
+        // уменьшить время
+        adjustTarget(-DELTA);
+
+        // mark that user must answer same question
+        awaitingCorrect = true;
+
+        // keep the wrong button disabled and slightly faded so user doesn't press it again
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+
+        // re-enable other buttons (user can try other options)
+        const otherBtns = Array.from(document.querySelectorAll('.opt-btn'));
+        otherBtns.forEach(b => { if (!b.classList.contains('wrong')) b.disabled = false; });
+
+        // if targetTime is zero — endGame will be called from loop
       }
     }
 
-    function endGame(){
+    function endGame() {
       stopTimer();
-      questionEl.style.display='none';
-      document.getElementById('hint').style.display='none';
-      optionsEl.style.display='none';
-      endScreen.style.display='block';
-      finalPoints.textContent=score;
-      if(score>bestScore){ bestScore=score; localStorage.setItem('wordBattleBest',bestScore); }
-      bestPoints.textContent=bestScore;
-      try{ if(window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) Telegram.WebApp.sendData(JSON.stringify({score})); } catch(e){}
+      // hide question/options
+      questionEl.style.display = 'none';
+      document.getElementById('hint').style.display = 'none';
+      optionsEl.style.display = 'none';
+
+      // show end screen + save record
+      finalPoints.textContent = score;
+      if (score > bestScore) {
+        bestScore = score;
+        localStorage.setItem('wordBattleBest', String(bestScore));
+      }
+      bestPoints.textContent = bestScore;
+      endScreen.style.display = 'block';
+
+      // if inside Telegram WebApp, send result (optional)
+      try {
+        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) {
+          Telegram.WebApp.sendData(JSON.stringify({ score }));
+        }
+      } catch (e) { /* ignore */ }
     }
 
-    function resetGame(){
-      timeLeft=MAX_TIME; score=0; current=null; awaitingCorrect=false;
-      scoreValue.textContent='0';
-      questionEl.style.display=''; document.getElementById('hint').style.display=''; optionsEl.style.display='';
-      endScreen.style.display='none';
-      renderQuestion(); updateTimeBar(); startTimer();
+    function resetGame() {
+      // reset state
+      score = 0;
+      scoreValue.textContent = '0';
+      awaitingCorrect = false;
+      current = null;
+      endScreen.style.display = 'none';
+      questionEl.style.display = '';
+      document.getElementById('hint').style.display = '';
+      optionsEl.style.display = '';
+      // reset times
+      targetTime = MAX_TIME;
+      displayTime = MAX_TIME;
+      lastTimestamp = null;
+      updateTimeBar();
+
+      // render and start
+      renderQuestion();
+      startTimer();
     }
 
-    function initGame(){ renderQuestion(); updateTimeBar(); startTimer(); }
-
-    playAgainBtn.addEventListener('click', ()=>{
-      setTimeout(()=>{
-        const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
-        allBtns.forEach(b=>{ b.classList.remove('correct','wrong'); b.style.opacity='1'; b.disabled=false; });
-        resetGame();
-      },80);
+    // Start button and Play again
+    startBtn.addEventListener('click', () => {
+      document.getElementById('startScreen').style.display = 'none';
+      document.querySelector('.container').style.display = 'block';
+      resetGame();
     });
 
-    document.getElementById('startBtn').addEventListener('click', ()=>{
-  document.getElementById('startScreen').style.display='none';
-  document.querySelector('.container').style.display='block';
-  initGame();
-});
+    playAgainBtn.addEventListener('click', () => {
+      resetGame();
+    });
+
+    // Expose helper for potential WebApp integration: allow loading words via URL param `?words=...`
+    (function tryLoadWordsFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const p = params.get('words');
+        if (p) {
+          const parsed = JSON.parse(decodeURIComponent(p));
+          // expect parsed = [[word, translation], ...]
+          if (Array.isArray(parsed) && parsed.length > 0 && Array.isArray(parsed[0])) {
+            words = parsed.slice(0, 200); // safety cap
+          }
+        }
+      } catch (e) {
+        // ignore parse errors
+        console.error('words param parse error', e);
+      }
+    })();
+
+    // show stored best on load (if user opens page and inspects before starting)
+    bestPoints.textContent = bestScore;
   </script>
 </body>
 </html>
-
-
