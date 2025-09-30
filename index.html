@@ -362,7 +362,21 @@ function stopTimer() {
       if(selected===correct){
         btn.classList.add('correct');
         score++; scoreValue.textContent=score;
-        timeLeft = Math.min(MAX_TIME,timeLeft+DELTA); updateTimeBar();
+        function smoothTimeChange(newValue) {
+  const start = timeLeft;
+  const end = Math.max(0, Math.min(MAX_TIME, newValue));
+  const duration = 300; // мс
+  const startTime = performance.now();
+
+  function animate(now) {
+    const progress = Math.min(1, (now - startTime) / duration);
+    timeLeft = start + (end - start) * progress;
+    updateTimeBar();
+    if (progress < 1) requestAnimationFrame(animate);
+  }
+
+  requestAnimationFrame(animate);
+}
         awaitingCorrect=false;
         allBtns.forEach(b=>{ if(b!==btn) b.style.opacity='0.7'; });
         setTimeout(()=>{ renderQuestion(); },350);
@@ -414,4 +428,5 @@ function stopTimer() {
   </script>
 </body>
 </html>
+
 
