@@ -5,11 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Word Battle — Играй!</title>
 
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
   <style>
-    :root{
+    :root {
       --bg1: #7dd3fc;
       --bg2: #fbcfe8;
       --card: #ffffff;
@@ -20,7 +19,7 @@
       --radius: 18px;
     }
 
-    html,body{
+    html,body {
       height:100%;
       margin:0;
       font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -33,13 +32,13 @@
       padding:20px;
     }
 
-    .container{
+    .container {
       width:100%;
       max-width:var(--max-width);
       box-sizing:border-box;
     }
 
-    .game-card{
+    .game-card {
       background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(255,255,255,0.98));
       border-radius:var(--radius);
       padding:18px;
@@ -47,7 +46,7 @@
       overflow:hidden;
     }
 
-    .top-row{
+    .top-row {
       display:flex;
       align-items:center;
       justify-content:space-between;
@@ -86,13 +85,12 @@
       height:100%;
       width:100%;
       background: linear-gradient(90deg, #34D399 0%, #06b6d4 60%);
-      /* width обновляется JS по displayTime */
       transition: background 0.2s linear;
     }
 
     .play-area{ text-align:center; padding:8px 6px 14px 6px; }
 
-    .question{
+    .question {
       font-family:'Nunito', 'Poppins', sans-serif;
       font-size:20px;
       font-weight:800;
@@ -108,359 +106,97 @@
 
     .hint{ font-size:12px; color:#475569; margin-bottom:10px; }
 
-    .options{ display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:6px; }
+    .options{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:6px;
+    }
 
-    .opt-btn{
-      padding:12px 8px;
+    .opt-btn {
+      padding:14px 10px;
       border-radius:12px;
       border:none;
       font-weight:700;
       font-size:15px;
       cursor:pointer;
-      background: #fff;
-      box-shadow: 0 8px 18px rgba(2,6,23,0.06);
-      transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease, background .18s ease;
-      min-height:54px;
+      background:#fff;
+      box-shadow:0 8px 18px rgba(2,6,23,0.06);
+      transition:transform .12s ease, box-shadow .12s ease, opacity .12s ease, background .18s ease;
+      min-height:64px; /* фиксированная высота, чтобы не прыгали */
     }
+
     .opt-btn:active{ transform: translateY(3px); }
 
-    .opt-btn.correct{ box-shadow: 0 12px 26px rgba(52,211,153,0.24); transform: scale(1.03); outline:4px solid rgba(52,211,153,0.08); background:#10b981; color:#fff; }
-    .opt-btn.wrong{ box-shadow: 0 12px 26px rgba(251,113,129,0.18); transform: scale(.98); outline:4px solid rgba(251,113,129,0.06); background:#fb7185; color:#fff; }
+    .opt-btn.correct{ box-shadow:0 12px 26px rgba(52,211,153,0.24); transform:scale(1.03); outline:4px solid rgba(52,211,153,0.08); background:#10b981; color:#fff; }
+    .opt-btn.wrong{ box-shadow:0 12px 26px rgba(251,113,129,0.18); transform:scale(.98); outline:4px solid rgba(251,113,129,0.06); background:#fb7185; color:#fff; }
 
     .end-screen{ display:none; text-align:center; padding:14px; }
     .end-screen h2{ margin:8px 0; font-size:20px; }
-    .end-score{ font-family:'Nunito'; font-size:24px; font-weight:800; color:#0f172a; background: linear-gradient(90deg,#fff,#fff6); padding:8px 12px; border-radius:12px; display:inline-block; margin:6px 8px; }
+    .end-score{ font-family:'Nunito'; font-size:24px; font-weight:800; color:#0f172a; background:linear-gradient(90deg,#fff,#fff6); padding:8px 12px; border-radius:12px; display:inline-block; margin:6px 8px; }
 
     .controls{ display:flex; gap:10px; margin-top:12px; justify-content:center; }
-    .primary{ background: linear-gradient(90deg,#06b6d4,#3b82f6); color:white; padding:10px 14px; border-radius:12px; border:none; font-weight:700; cursor:pointer; }
+    .primary{ background:linear-gradient(90deg,#06b6d4,#3b82f6); color:white; padding:10px 14px; border-radius:12px; border:none; font-weight:700; cursor:pointer; }
 
     @media (max-width:380px){
       .question{ font-size:18px; }
-      .opt-btn{ font-size:14px; padding:10px 6px; min-height:48px; }
+      .opt-btn{ font-size:14px; padding:10px 6px; min-height:58px; }
     }
   </style>
 </head>
 <body>
   <div id="startScreen" style="text-align:center; padding:20px;">
     <h2>Добро пожаловать в Word Battle!</h2>
-    <p style="color:#0f172a; margin:6px 0 14px;">Тренируй слова быстро — на время. Правильный ответ +2s (до 7s), неправильный —2s. Удачи!</p>
+    <p style="color:#0f172a; margin:6px 0 14px;">⏳ У тебя 10 секунд. Правильный ответ +2 сек (до 10 сек), неправильный −2 сек. Успей как можно больше!</p>
     <button id="startBtn" class="primary">Начать игру</button>
   </div>
 
   <div class="container" style="display:none;">
-    <div class="game-card" role="application" aria-label="Word Battle game">
+    <div class="game-card">
       <div class="top-row">
-        <div class="score" aria-hidden="true">
-          <div class="star" aria-hidden="true"></div>
-          <div id="scoreValue">0</div>
-        </div>
+        <div class="score"><div class="star"></div><div id="scoreValue">0</div></div>
         <div class="title">Word Battle</div>
       </div>
-
-      <div class="time-bar-wrap" aria-hidden="true" title="Оставшееся время">
-        <div id="timeBar" class="time-bar"></div>
-      </div>
-
+      <div class="time-bar-wrap"><div id="timeBar" class="time-bar"></div></div>
       <div class="play-area">
         <div class="question" id="question">Загрузка...</div>
         <div class="hint" id="hint">Выберите правильный перевод</div>
-
-        <div class="options" id="options" aria-live="polite" aria-atomic="true">
-          <!-- варианты появятся тут -->
-        </div>
-
+        <div class="options" id="options"></div>
         <div class="end-screen" id="endScreen">
           <h2>Игра окончена!</h2>
           <div class="end-score">Очки: <span id="finalPoints">0</span></div>
           <div class="end-score">Рекорд: <span id="bestScore">0</span></div>
-          <div class="controls">
-            <button class="primary" id="playAgain">Играть снова</button>
-          </div>
+          <div class="controls"><button class="primary" id="playAgain">Играть снова</button></div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Настройки
-    const MAX_TIME = 7;   // максимальное время (сек)
-    const DELTA = 2;      // прибавлять/убавлять (сек)
-    const SMOOTH_SPEED = 8; // скорость подстройки displayTime к targetTime (чем больше — тем резче)
+    const MAX_TIME = 10;  // теперь 10 секунд
+    const DELTA = 2;
+    const SMOOTH_SPEED = 8;
 
-    // Пул слов (при интеграции — заменяется из URL / WebApp param)
-    let words = [
-      ["apple", "яблоко"],
-      ["dog", "собака"],
-      ["car", "машина"],
-      ["house", "дом"],
-      ["book", "книга"],
-      ["sun", "солнце"],
-      ["water", "вода"],
-      ["tree", "дерево"]
-    ];
+    let words = [["apple","яблоко"],["dog","собака"],["car","машина"],["house","дом"],["book","книга"],["sun","солнце"],["water","вода"],["tree","дерево"]];
 
-    // Состояние
-    let score = 0;
-    let bestScore = parseInt(localStorage.getItem('wordBattleBest') || '0', 10);
-    let current = null;
-    let awaitingCorrect = false; // если пользователь дал неверный ответ — нужно ответить на тот же вопрос
-    let targetTime = MAX_TIME;   // реальное оставшееся время (уменьшается непрерывно)
-    let displayTime = MAX_TIME;  // отображаемое время (плавно подстраивается к targetTime)
-    let lastTimestamp = null;
-    let rafId = null;
+    let score=0,bestScore=parseInt(localStorage.getItem('wordBattleBest')||'0',10),current=null,awaitingCorrect=false,targetTime=MAX_TIME,displayTime=MAX_TIME,lastTimestamp=null,rafId=null;
+    const scoreValue=document.getElementById('scoreValue'),timeBar=document.getElementById('timeBar'),questionEl=document.getElementById('question'),optionsEl=document.getElementById('options'),endScreen=document.getElementById('endScreen'),finalPoints=document.getElementById('finalPoints'),bestPoints=document.getElementById('bestScore'),startBtn=document.getElementById('startBtn'),playAgainBtn=document.getElementById('playAgain');
 
-    // DOM
-    const scoreValue = document.getElementById('scoreValue');
-    const timeBar = document.getElementById('timeBar');
-    const questionEl = document.getElementById('question');
-    const optionsEl = document.getElementById('options');
-    const endScreen = document.getElementById('endScreen');
-    const finalPoints = document.getElementById('finalPoints');
-    const bestPoints = document.getElementById('bestScore');
-    const startBtn = document.getElementById('startBtn');
-    const playAgainBtn = document.getElementById('playAgain');
-
-    // Утилиты
-    function shuffleArray(a){
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
-      return a;
-    }
-
-    function pickQuestion() {
-      // если пользователь должен снова ответить на текущий вопрос — не меняем его
-      if (awaitingCorrect && current) return current;
-      current = words[Math.floor(Math.random() * words.length)];
-      awaitingCorrect = false;
-      return current;
-    }
-
-    function renderQuestion() {
-      const q = pickQuestion();
-      if (!q) return;
-      const [orig, trans] = q;
-      questionEl.textContent = `Как переводится «${orig}»?`;
-
-      // варианты
-      let opts = [trans];
-      const pool = words.map(w => w[1]).filter(t => t !== trans);
-      shuffleArray(pool);
-      for (let i = 0; opts.length < 4 && i < pool.length; i++) {
-        if (!opts.includes(pool[i])) opts.push(pool[i]);
-      }
-      // если мало слов — заполнить заглушками
-      while (opts.length < 4) opts.push("—");
-      shuffleArray(opts);
-
-      // рендер кнопок
-      optionsEl.innerHTML = '';
-      opts.forEach((opt) => {
-        const btn = document.createElement('button');
-        btn.className = 'opt-btn';
-        btn.type = 'button';
-        btn.textContent = opt;
-        btn.dataset.value = opt;
-        btn.onclick = () => handleAnswer(btn);
-        optionsEl.appendChild(btn);
-      });
-    }
-
-    function updateTimeBar() {
-      // используем displayTime (плавное значение)
-      const ratio = Math.max(0, Math.min(1, displayTime / MAX_TIME));
-      timeBar.style.width = (ratio * 100) + '%';
-
-      // смена цвета по оставшемуся времени (опционально)
-      if (ratio > 0.6) {
-        timeBar.style.background = 'linear-gradient(90deg, #34D399 0%, #06b6d4 60%)';
-      } else if (ratio > 0.3) {
-        timeBar.style.background = 'linear-gradient(90deg, #fbbf24 0%, #f97316 60%)';
-      } else {
-        timeBar.style.background = 'linear-gradient(90deg, #fb7185 0%, #ef4444 60%)';
-      }
-    }
-
-    // главный цикл — уменьшает targetTime непрерывно и плавно подстраивает displayTime
-    function loop(now) {
-      if (!lastTimestamp) lastTimestamp = now;
-      const dt = (now - lastTimestamp) / 1000;
-      lastTimestamp = now;
-
-      // уменьшаем targetTime на прошедшее время
-      targetTime = Math.max(0, targetTime - dt);
-
-      // плавно подтягиваем displayTime к targetTime
-      // factor = 1 - exp(-k * dt)  ~ используем приближение линейного сглаживания
-      const factor = Math.min(1, SMOOTH_SPEED * dt);
-      displayTime += (targetTime - displayTime) * factor;
-
-      updateTimeBar();
-
-      if (targetTime <= 0) {
-        // время вышло
-        endGame();
-        return;
-      }
-
-      rafId = requestAnimationFrame(loop);
-    }
-
-    function startTimer() {
-      stopTimer();
-      lastTimestamp = null;
-      rafId = requestAnimationFrame(loop);
-    }
-
-    function stopTimer() {
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-        rafId = null;
-      }
-    }
-
-    function adjustTarget(delta) {
-      // сразу корректируем targetTime (и он будет плавно подтянут displayTime)
-      targetTime = Math.max(0, Math.min(MAX_TIME, targetTime + delta));
-      // если targetTime reached zero here, loop will call endGame soon; but we can check:
-      if (targetTime <= 0) {
-        // ensure displayTime moves to zero quickly
-        displayTime = 0;
-        updateTimeBar();
-        endGame();
-      }
-    }
-
-    function handleAnswer(btn) {
-      if (!current) return;
-      const selected = btn.dataset.value;
-      const correct = current[1];
-
-      // ignore placeholder
-      if (selected === "—") return;
-
-      // disable all briefly to avoid double clicks
-      const allBtns = Array.from(document.querySelectorAll('.opt-btn'));
-      allBtns.forEach(b => b.disabled = true);
-
-      if (selected === correct) {
-        // mark correct
-        btn.classList.add('correct');
-
-        // score +1
-        score++;
-        scoreValue.textContent = score;
-
-        // increase time (плавно)
-        adjustTarget(DELTA);
-
-        // stop blocking — подождём немного для эффекта и затем следующий вопрос
-        setTimeout(() => {
-          // восстановим кнопки for next question
-          const btns = Array.from(document.querySelectorAll('.opt-btn'));
-          btns.forEach(b => { b.classList.remove('correct','wrong'); b.disabled = false; b.style.opacity = ''; });
-
-          awaitingCorrect = false;
-          renderQuestion();
-        }, 320);
-      } else {
-        // wrong
-        btn.classList.add('wrong');
-        // уменьшить время
-        adjustTarget(-DELTA);
-
-        // mark that user must answer same question
-        awaitingCorrect = true;
-
-        // keep the wrong button disabled and slightly faded so user doesn't press it again
-        btn.disabled = true;
-        btn.style.opacity = '0.6';
-
-        // re-enable other buttons (user can try other options)
-        const otherBtns = Array.from(document.querySelectorAll('.opt-btn'));
-        otherBtns.forEach(b => { if (!b.classList.contains('wrong')) b.disabled = false; });
-
-        // if targetTime is zero — endGame will be called from loop
-      }
-    }
-
-    function endGame() {
-      stopTimer();
-      // hide question/options
-      questionEl.style.display = 'none';
-      document.getElementById('hint').style.display = 'none';
-      optionsEl.style.display = 'none';
-
-      // show end screen + save record
-      finalPoints.textContent = score;
-      if (score > bestScore) {
-        bestScore = score;
-        localStorage.setItem('wordBattleBest', String(bestScore));
-      }
-      bestPoints.textContent = bestScore;
-      endScreen.style.display = 'block';
-
-      // if inside Telegram WebApp, send result (optional)
-      try {
-        if (window.Telegram && Telegram.WebApp && Telegram.WebApp.sendData) {
-          Telegram.WebApp.sendData(JSON.stringify({ score }));
-        }
-      } catch (e) { /* ignore */ }
-    }
-
-    function resetGame() {
-      // reset state
-      score = 0;
-      scoreValue.textContent = '0';
-      awaitingCorrect = false;
-      current = null;
-      endScreen.style.display = 'none';
-      questionEl.style.display = '';
-      document.getElementById('hint').style.display = '';
-      optionsEl.style.display = '';
-      // reset times
-      targetTime = MAX_TIME;
-      displayTime = MAX_TIME;
-      lastTimestamp = null;
-      updateTimeBar();
-
-      // render and start
-      renderQuestion();
-      startTimer();
-    }
-
-    // Start button and Play again
-    startBtn.addEventListener('click', () => {
-      document.getElementById('startScreen').style.display = 'none';
-      document.querySelector('.container').style.display = 'block';
-      resetGame();
-    });
-
-    playAgainBtn.addEventListener('click', () => {
-      resetGame();
-    });
-
-    // Expose helper for potential WebApp integration: allow loading words via URL param `?words=...`
-    (function tryLoadWordsFromUrl() {
-      try {
-        const params = new URLSearchParams(window.location.search);
-        const p = params.get('words');
-        if (p) {
-          const parsed = JSON.parse(decodeURIComponent(p));
-          // expect parsed = [[word, translation], ...]
-          if (Array.isArray(parsed) && parsed.length > 0 && Array.isArray(parsed[0])) {
-            words = parsed.slice(0, 200); // safety cap
-          }
-        }
-      } catch (e) {
-        // ignore parse errors
-        console.error('words param parse error', e);
-      }
-    })();
-
-    // show stored best on load (if user opens page and inspects before starting)
-    bestPoints.textContent = bestScore;
+    function shuffleArray(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+    function pickQuestion(){if(awaitingCorrect&&current)return current;current=words[Math.floor(Math.random()*words.length)];awaitingCorrect=false;return current;}
+    function renderQuestion(){const q=pickQuestion();if(!q)return;const [orig,trans]=q;questionEl.textContent=`Как переводится «${orig}»?`;let opts=[trans];const pool=words.map(w=>w[1]).filter(t=>t!==trans);shuffleArray(pool);for(let i=0;opts.length<4&&i<pool.length;i++){if(!opts.includes(pool[i]))opts.push(pool[i]);}while(opts.length<4)opts.push("—");shuffleArray(opts);optionsEl.innerHTML='';opts.forEach(opt=>{const btn=document.createElement('button');btn.className='opt-btn';btn.textContent=opt;btn.dataset.value=opt;btn.onclick=()=>handleAnswer(btn);optionsEl.appendChild(btn);});}
+    function updateTimeBar(){const ratio=Math.max(0,Math.min(1,displayTime/MAX_TIME));timeBar.style.width=(ratio*100)+'%';if(ratio>0.6){timeBar.style.background='linear-gradient(90deg,#34D399 0%,#06b6d4 60%)';}else if(ratio>0.3){timeBar.style.background='linear-gradient(90deg,#fbbf24 0%,#f97316 60%)';}else{timeBar.style.background='linear-gradient(90deg,#fb7185 0%,#ef4444 60%)';}}
+    function loop(now){if(!lastTimestamp)lastTimestamp=now;const dt=(now-lastTimestamp)/1000;lastTimestamp=now;targetTime=Math.max(0,targetTime-dt);const factor=Math.min(1,SMOOTH_SPEED*dt);displayTime+=(targetTime-displayTime)*factor;updateTimeBar();if(targetTime<=0){endGame();return;}rafId=requestAnimationFrame(loop);}
+    function startTimer(){stopTimer();lastTimestamp=null;rafId=requestAnimationFrame(loop);}
+    function stopTimer(){if(rafId){cancelAnimationFrame(rafId);rafId=null;}}
+    function adjustTarget(delta){targetTime=Math.max(0,Math.min(MAX_TIME,targetTime+delta));if(targetTime<=0){displayTime=0;updateTimeBar();endGame();}}
+    function handleAnswer(btn){if(!current)return;const selected=btn.dataset.value,correct=current[1];if(selected==="—")return;const allBtns=[...document.querySelectorAll('.opt-btn')];allBtns.forEach(b=>b.disabled=true);if(selected===correct){btn.classList.add('correct');score++;scoreValue.textContent=score;adjustTarget(DELTA);setTimeout(()=>{allBtns.forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false;b.style.opacity='';});awaitingCorrect=false;renderQuestion();},300);}else{btn.classList.add('wrong');adjustTarget(-DELTA);awaitingCorrect=true;btn.disabled=true;btn.style.opacity='0.6';allBtns.forEach(b=>{if(!b.classList.contains('wrong'))b.disabled=false;});}}
+    function endGame(){stopTimer();questionEl.style.display='none';document.getElementById('hint').style.display='none';optionsEl.style.display='none';finalPoints.textContent=score;if(score>bestScore){bestScore=score;localStorage.setItem('wordBattleBest',String(bestScore));}bestPoints.textContent=bestScore;endScreen.style.display='block';try{if(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.sendData){Telegram.WebApp.sendData(JSON.stringify({score}));}}catch(e){}}
+    function resetGame(){score=0;scoreValue.textContent='0';awaitingCorrect=false;current=null;endScreen.style.display='none';questionEl.style.display='';document.getElementById('hint').style.display='';optionsEl.style.display='';targetTime=MAX_TIME;displayTime=MAX_TIME;lastTimestamp=null;updateTimeBar();renderQuestion();startTimer();}
+    startBtn.addEventListener('click',()=>{document.getElementById('startScreen').style.display='none';document.querySelector('.container').style.display='block';resetGame();});
+    playAgainBtn.addEventListener('click',()=>{resetGame();});
+    (function tryLoadWordsFromUrl(){try{const params=new URLSearchParams(window.location.search);const p=params.get('words');if(p){const parsed=JSON.parse(decodeURIComponent(p));if(Array.isArray(parsed)&&parsed.length>0&&Array.isArray(parsed[0])){words=parsed.slice(0,200);}}}catch(e){console.error('words param parse error',e);}})();
+    bestPoints.textContent=bestScore;
   </script>
 </body>
 </html>
